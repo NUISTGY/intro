@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Yu</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .message-board { max-width: 600px; margin: 0 auto; }
+        .message { border-bottom: 1px solid #ddd; padding: 10px; }
+        .message p { margin: 0; }
+        .timestamp { font-size: 0.8em; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="message-board">
+        <h1>For Yu</h1>
+        <form id="message-form">
+            <textarea id="message-input" rows="4" placeholder="在这里输入留言"></textarea><br>
+            <button type="submit">submit</button>
+        </form>
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const messagesDiv = document.getElementById('messages');
+
+        function saveMessage(message) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const timestamp = new Date().toLocaleString();
+            messages.push({ text: message, time: timestamp });
+            localStorage.setItem('messages', JSON.stringify(messages));
+        }
+
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messagesDiv.innerHTML = '';
+            messages.forEach((message) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.innerHTML = `<p>${message.text}</p><div class="timestamp">${message.time}</div>`;
+                messagesDiv.appendChild(messageDiv);
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = messageInput.value;
+            if (message) {
+                saveMessage(message);
+                messageInput.value = '';
+                loadMessages();
+            }
+        });
+
+        window.onload = loadMessages;
+    </script>
+</body>
+</html>
